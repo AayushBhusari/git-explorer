@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { RingLoader } from "react-spinners";
 import { /* Link, */ useNavigate } from "react-router-dom";
 
-interface User {
+interface Users {
   id: number;
   login: string;
   avatar_url: string;
@@ -11,8 +11,8 @@ interface User {
   following: number;
 }
 
-const User: React.FC = () => {
-  const [users, setUsers] = useState<User[] | null>(null);
+const Users: React.FC = () => {
+  const [users, setUsers] = useState<Users[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const User: React.FC = () => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        const jsonData: User[] = await response.json();
+        const jsonData: Users[] = await response.json();
         setUsers(jsonData);
         setLoading(false);
         console.log(jsonData);
@@ -88,4 +88,4 @@ const User: React.FC = () => {
   );
 };
 
-export default User;
+export default Users;
