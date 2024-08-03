@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { RingLoader } from "react-spinners";
-import { /* Link, */ useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-interface Users {
+interface User {
   id: number;
   login: string;
   avatar_url: string;
@@ -11,18 +11,28 @@ interface Users {
   following: number;
 }
 
+interface UsersResponse {
+  items: User[];
+}
+
 const Users: React.FC = () => {
-  const [users, setUsers] = useState<Users[] | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`https://api.github.com/users`);
+        const response = await fetch(
+          `https://api.github.com/search/users?q=followers:>1000&sort=followers`
+        );
 
-        const jsonData: Users[] = await response.json();
-        setUsers(jsonData);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const jsonData: UsersResponse = await response.json();
+        setUsers(jsonData.items);
         setLoading(false);
         console.log(jsonData);
       } catch (error) {
@@ -31,9 +41,6 @@ const Users: React.FC = () => {
     };
 
     fetchUsers();
-    return () => {
-      console.clear();
-    };
   }, []);
 
   return (
@@ -63,11 +70,6 @@ const Users: React.FC = () => {
                   <div className="font-bold text-xl mb-2">{user.login}</div>
                 </div>
                 <div className="px-6 py-4">
-                  {/* Approach using link and Link ie Dynamic routing is below*/}
-                  {/* 
-                  <Link to={`/users/user/${user.login}`}>See More</Link> */}
-                  {/* Programatic routing is below, we use useNavigate hook */}
-
                   <button
                     className="bg-blue-500 px-5 py-2 rounded-md text-white"
                     onClick={() => {
